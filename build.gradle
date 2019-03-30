@@ -1,0 +1,67 @@
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'idea'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+dependencies {
+    def defaultBoot = ['spring-boot-starter',
+                       'spring-boot-starter-web'
+    ]
+
+    defaultBoot.each { bootModule ->
+        compile("org.springframework.boot:$bootModule:2.1.2.RELEASE")
+
+        testCompile("org.springframework.boot:spring-boot-starter-test:2.1.2.RELEASE")
+    }
+
+    def junitPlatformModules = [
+            "junit-platform-commons",
+            "junit-platform-engine",
+            "junit-platform-runner",
+    ]
+
+    junitPlatformModules.each { name ->
+        testCompile("org.junit.platform:$name:1.3.2")
+    }
+
+    def junitVintageModules = [
+            "junit-jupiter-api",
+            "junit-jupiter-engine",
+            "junit-jupiter-params",
+    ]
+
+    junitVintageModules.each { name ->
+        testCompile "org.junit.jupiter:$name:5.3.2"
+    }
+    testCompile "org.junit.vintage:junit-vintage-engine:5.3.2"
+    testCompile ("org.junit.platform:junit-platform-runner:1.3.2") {
+        exclude module: "junit"
+    }
+    testCompile "org.mockito:mockito-core:2.23.4"
+
+}
+
+group = 'com.javaappintellij'
+version = '1.0'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
